@@ -67,8 +67,6 @@ jobs:
         run: |
           echo docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${version} .
           docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${version} .
-          echo docker push ${IMAGE}:${version}
-          docker push ${IMAGE}:${version}
       - name: Slack Notification Success
         if: ${{ success() }}
         uses: rtCamp/action-slack-notify@v2
