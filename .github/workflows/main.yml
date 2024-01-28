@@ -27,7 +27,10 @@ jobs:
         with:
           fetch-depth: 0
       - id: version
-        run: echo "version=`git describe --tags`" >> $GITHUB_OUTPUT
+        run: |
+          set -e
+          echo "version=`git describe --tags`" >> $GITHUB_OUTPUT
+          set +e
       - id: environment
         run: |
           [[ $GITHUB_REF_NAME == "dev" ]] && echo "environment=dev" >> $GITHUB_OUTPUT
@@ -62,7 +65,9 @@ jobs:
         env:
           version: ${{ needs.InitInfo.outputs.version }}
         run: |
+          echo docker buildx build -t ${IMAGE}:${version} .
           docker buildx build -t ${IMAGE}:${version} .
+          echo docker push ${IMAGE}:${version}
           docker push ${IMAGE}:${version}
       - name: Slack Notification Success
         if: ${{ success() }}
