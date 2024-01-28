@@ -14,7 +14,7 @@ on:
 
 env:
   REGISTRY: asia-southeast1-docker.pkg.dev
-  IMAGE: "${REGISTRY}/cloudverse-foundation/cloudverse/${{ inputs.SERVICE }}"
+  IMAGE: "asia-southeast1-docker.pkg.dev/cloudverse-foundation/cloudverse/${{ inputs.SERVICE }}"
 
 jobs:
   InitInfo:
