@@ -20,8 +20,8 @@ jobs:
   InitInfo:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.setversion.outputs.version }}
-      environment: ${{ steps.setversion.outputs.environment }}
+      version: ${{ steps.version.outputs.version }}
+      environment: ${{ steps.environment.outputs.environment }}
     steps:
       - uses: actions/checkout@v4
         with:
