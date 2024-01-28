@@ -90,13 +90,14 @@ jobs:
       version: ${{ needs.InitInfo.outputs.version }}
       environment: ${{ needs.InitInfo.outputs.environment }}
       service: ${{ inputs.servie }}
+      token: ${{ secrets.GH_TOKEN }}
     if: github.ref_name == 'dev' || github.ref_name == 'staging' || github.ref_name == 'production'
     steps:
       - run: |
           curl -L \
           -X POST \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ inputs.GH_TOKEN }}" \
+          -H "Authorization: Bearer '${token}'" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/CloudVerse-Pte-Ltd/argocd/actions/workflows/83931042/dispatches \
           -d '{"ref":"main","inputs":{"environment":"'${environment}'","service":"'${service}'","version": "'${version}'"}}'
