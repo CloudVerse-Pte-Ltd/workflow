@@ -1,0 +1,88 @@
+on:
+  workflow_call:
+    inputs:
+      SERVICE_NAME:
+        type: string
+        required: true
+    secrets:
+      GCP_CREDS:
+        required: true
+      SLACK_WEBHOOK:
+        required: true
+
+env:
+  REGISTRY: asia-southeast1-docker.pkg.dev
+  IMAGE: "${REGISTRY}/cloudverse-foundation/cloudverse/${{ inputs.SERVICE_NAME }}"
+
+jobs:
+  InitInfo:
+    runs-on: ubuntu-latest-l
+    outputs:
+      version: ${{ steps.setversion.outputs.version }}
+      environment: ${{ steps.setversion.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: version
+        run: echo "version=`git describe --tags`" >> $GITHUB_OUTPUT
+      - id: environment
+        run: |
+          [[ $GITHUB_REF_NAME == "dev" ]] && echo "environment=dev" >> $GITHUB_OUTPUT
+          [[ $GITHUB_REF_NAME == "test" ]] && echo "environment=test" >> $GITHUB_OUTPUT
+          [[ $GITHUB_REF_NAME == "production" ]] && echo "environment=staging" >> $GITHUB_OUTPUT
+
+  Build:
+    runs-on: ubuntu-latest-l
+    needs: InitJob
+    outputs:
+      version: ${{ steps.setversion.outputs.version }}
+    steps:
+      - name: Slack notify start build
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: cloudverse-devops
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_TITLE: "`${{ inputs.SERVICE }}` start build on `${{ neeeds.InitInfo.outputs.environment }}`"
+          SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDS }}'
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: _json_key
+          password: ${{ secrets.GCP_CREDENTIALS }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build docker container
+        run: |
+          docker buildx build -t ${IMAGE}:${version} .
+          docker push ${IMAGE}:${version}
+      - name: Slack Notification Success
+        if: ${{ success() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: cloudverse-devops
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_TITLE: "`${{ inputs.SERVICE }}` build `success` on `${{ neeeds.InitInfo.outputs.environment }}`"
+          SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - name: Slack Notification Success
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: cloudverse-devops
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_TITLE: "`${{ inputs.SERVICE }}` build `failed` on `${{ neeeds.InitInfo.outputs.environment }}`"
+          SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+  Deploy:
+    runs-on: ubuntu-latest-l
+    needs: Build
