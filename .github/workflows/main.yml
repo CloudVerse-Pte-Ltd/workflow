@@ -88,7 +88,7 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest-l
     needs: Build
-    if: github.ref_name == "dev" || github.ref_name == "staging" || github.ref_name == "production"
+    if: github.ref_name == 'dev' || github.ref_name == 'staging' || github.ref_name == 'production'
     steps:
       - run: |
           curl -L \
