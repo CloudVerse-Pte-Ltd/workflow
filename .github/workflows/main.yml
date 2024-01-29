@@ -118,7 +118,7 @@ jobs:
           SLACK_CHANNEL: cloudverse-devops
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_TITLE: "`${{ inputs.SERVICE }}` deployed `success` on `${{ needs.Build.outputs.environment }}`"
+          SLACK_TITLE: "`${{ inputs.SERVICE }}` `start` deploy on `${{ needs.Build.outputs.environment }}`"
           SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: Slack Notification Failure
         if: ${{ failure() }}
