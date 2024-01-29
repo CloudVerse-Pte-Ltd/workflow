@@ -91,7 +91,7 @@ jobs:
           echo "version=${version}" >> $GITHUB_OUTPUT
       - id: environment
         run: |
-          echo "environment=${{ needs.InitInfo.outputs.environment }} >> $GITHUB_OUTPUT
+          echo "environment=${{ needs.InitInfo.outputs.environment }}" >> $GITHUB_OUTPUT
 
   Deploy:
     runs-on: ubuntu-latest
