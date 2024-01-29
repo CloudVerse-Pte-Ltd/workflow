@@ -14,7 +14,6 @@ on:
 
 env:
   REGISTRY: asia-southeast1-docker.pkg.dev
-  IMAGE: "asia-southeast1-docker.pkg.dev/cloudverse-foundation/cloudverse/${{ inputs.SERVICE }}"
 
 jobs:
   InitInfo:
@@ -66,8 +65,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build docker container
         run: |
-          echo docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} .
-          docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} .
+          IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${{ needs.InitInfo.outputs.environment }}/${{ inputs.SERVICE }}"
+          docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
+            -t ${IMAGE}:latest .
       - name: Slack Notification Success
         if: ${{ success() }}
         uses: rtCamp/action-slack-notify@v2
