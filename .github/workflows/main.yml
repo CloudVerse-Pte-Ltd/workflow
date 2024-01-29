@@ -19,6 +19,7 @@ env:
 jobs:
   InitInfo:
     runs-on: ubuntu-latest
+    if: github.ref_name == 'main' || github.ref_name == 'staging' || github.ref_name == 'production'
     outputs:
       version: ${{ steps.version.outputs.version }}
       environment: ${{ steps.environment.outputs.environment }}
@@ -33,13 +34,14 @@ jobs:
           set +e
       - id: environment
         run: |
-          [[ $GITHUB_REF_NAME == "dev" ]] && echo "environment=dev" >> $GITHUB_OUTPUT
+          [[ $GITHUB_REF_NAME == "main" ]] && echo "environment=dev" >> $GITHUB_OUTPUT
           [[ $GITHUB_REF_NAME == "test" ]] && echo "environment=test" >> $GITHUB_OUTPUT
           [[ $GITHUB_REF_NAME == "production" ]] && echo "environment=staging" >> $GITHUB_OUTPUT
 
   Build:
     runs-on: ubuntu-latest
     needs: InitInfo
+    if: github.ref_name == 'main' || github.ref_name == 'staging' || github.ref_name == 'production'
     outputs:
       version: ${{ steps.version.outputs.version }}
       environment: ${{ steps.environment.outputs.environment }}
@@ -99,7 +101,7 @@ jobs:
       environment: ${{ needs.Build.outputs.environment }}
       service: ${{ inputs.SERVICE }}
       token: ${{ secrets.GH_TOKEN }}
-    if: github.ref_name == 'dev' || github.ref_name == 'staging' || github.ref_name == 'production'
+    if: github.ref_name == 'main' || github.ref_name == 'staging' || github.ref_name == 'production'
     steps:
       - run: |
           curl -L \
