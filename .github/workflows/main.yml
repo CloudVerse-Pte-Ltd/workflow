@@ -40,8 +40,6 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     needs: InitInfo
-    env:
-      version: ${{ needs.InitInfo.outputs.version }}
     outputs:
       version: ${{ steps.version.outputs.version }}
       environment: ${{ steps.environment.outputs.environment }}
@@ -66,8 +64,8 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build docker container
         run: |
-          echo docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${version} .
-          docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${version} .
+          echo docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} .
+          docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} .
       - name: Slack Notification Success
         if: ${{ success() }}
         uses: rtCamp/action-slack-notify@v2
@@ -88,7 +86,7 @@ jobs:
           SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - id: version
         run: |
-          echo "version=${version}" >> $GITHUB_OUTPUT
+          echo "version=${{ needs.InitInfo.outputs.version }}" >> $GITHUB_OUTPUT
       - id: environment
         run: |
           echo "environment=${{ needs.InitInfo.outputs.environment }}" >> $GITHUB_OUTPUT
