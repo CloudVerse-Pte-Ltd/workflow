@@ -74,23 +74,23 @@ jobs:
         run: |
           case ${{ needs.InitInfo.outputs.environment }} in
             dev)
-              aws secretsmanager get-secret-value --secret-id dev-cloudverse-frontend-external-secret | jq --raw-output '.SecretString' >> cloudverse-frontend-external-secret.txt
-              aws secretsmanager get-secret-value --secret-id dev-cloudverse-frontend-external-secret-ci-env | jq --raw-output '.SecretString' >> cloudverse-frontend-external-secret-ci-env.txt
-              sort -u cloudverse-frontend-external-secret.txt cloudverse-frontend-external-secret-ci-env.txt > .env
+              aws secretsmanager get-secret-value --secret-id dev-cloudverse-identity-external-secret-env | jq --raw-output '.SecretString' >> cloudverse-identity-external-secret-env.txt
+              aws secretsmanager get-secret-value --secret-id dev-cloudverse-identity-external-secret-env-ci-env | jq --raw-output '.SecretString' >> cloudverse-identity-external-secret-env-ci-env.txt
+              sort -u cloudverse-identity-external-secret-env.txt cloudverse-identity-external-secret-env-ci-env.txt > .env
             ;;
 
             test)
-              aws secretsmanager get-secret-value --secret-id test-cloudverse-frontend-external-secret | jq --raw-output '.SecretString' >> cloudverse-frontend-external-secret.txt
-              aws secretsmanager get-secret-value --secret-id test-cloudverse-frontend-external-secret-ci-env | jq --raw-output '.SecretString' >> cloudverse-frontend-external-secret-ci-env.txt
-              sort -u cloudverse-frontend-external-secret.txt cloudverse-frontend-external-secret-ci-env.txt > .env
+              aws secretsmanager get-secret-value --secret-id test-cloudverse-identity-external-secret-env | jq --raw-output '.SecretString' >> cloudverse-identity-external-secret-env.txt
+              aws secretsmanager get-secret-value --secret-id test-cloudverse-identity-external-secret-env-ci-env | jq --raw-output '.SecretString' >> cloudverse-identity-external-secret-env-ci-env.txt
+              sort -u cloudverse-identity-external-secret-env.txt cloudverse-identity-external-secret-env-ci-env.txt > .env
             ;;
 
             staging)
-              aws secretsmanager get-secret-value --secret-id staging-cloudverse-frontend-external-secret | jq --raw-output '.SecretString' >> .env
+              aws secretsmanager get-secret-value --secret-id staging-cloudverse-identity-external-secret-env | jq --raw-output '.SecretString' >> .env
             ;;
 
             prod)
-              aws secretsmanager get-secret-value --secret-id production-cloudverse-frontend-external-secret | jq --raw-output '.SecretString' >> .env
+              aws secretsmanager get-secret-value --secret-id production-cloudverse-identity-external-secret-env | jq --raw-output '.SecretString' >> .env
             ;;
 
             *)
