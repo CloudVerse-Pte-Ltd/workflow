@@ -11,6 +11,10 @@ on:
         required: true
       GH_TOKEN:
         required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
 
 env:
   REGISTRY: asia-southeast1-docker.pkg.dev
