@@ -76,6 +76,70 @@ jobs:
         run: gcloud auth configure-docker asia-southeast1-docker.pkg.dev
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Krakend replace for dev
+        if: ${{ needs.InitInfo.outputs.environment }} == 'dev'
+        run: |
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/dev-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/dev-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/dev-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver_rest.json
+          sed -i "s|http:\/\/platform-budget-svc.test|http:\/\/dev-platform-budget-svc|g" ./config/settings/platform_budget.json
+          sed -i "s|http:\/\/platform-alarm-svc.test|http:\/\/dev-platform-alarm-svc|g" ./config/settings/platform_alarm.json
+          sed -i "s|http:\/\/platform-iam-svc.test|http:\/\/dev-platform-iam-svc|g" ./config/settings/platform_iam.json
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/dev-platform-identity-svc|g" ./config/settings/platform_identity.json
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/dev-platform-identity-svc|g" ./config/settings/platform_identity_rest.json
+          sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/dev-platform-notification-svc|g" ./config/settings/platform_notification.json
+          sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/dev-platform-notification-svc|g" ./config/settings/cloudverse_notification_callback.json
+          sed -i "s|http:\/\/platform-audit-log-svc.test|http:\/\/dev-platform-audit-log-svc|g" ./config/settings/platform_audit_log.json
+          sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/dev-console.cloudverse.ai|g" ./config/krakend.json
+          sed -i "s|http:\/\/cspm.test|http:\/\/dev-cspm|g" ./config/settings/cspm_rest.json
+      - name: Krakend replace for test
+        if: ${{ needs.InitInfo.outputs.environment }} == 'test'
+        run: |
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/test-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/test-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/test-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver_rest.json
+          sed -i "s|http:\/\/platform-budget-svc.test|http:\/\/test-platform-budget-svc|g" ./config/settings/platform_budget.json
+          sed -i "s|http:\/\/platform-alarm-svc.test|http:\/\/test-platform-alarm-svc|g" ./config/settings/platform_alarm.json
+          sed -i "s|http:\/\/platform-iam-svc.test|http:\/\/test-platform-iam-svc|g" ./config/settings/platform_iam.json
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/test-platform-identity-svc|g" ./config/settings/platform_identity.json
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/test-platform-identity-svc|g" ./config/settings/platform_identity_rest.json
+          sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/test-platform-notification-svc|g" ./config/settings/platform_notification.json
+          sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/test-platform-notification-svc|g" ./config/settings/cloudverse_notification_callback.json
+          sed -i "s|http:\/\/platform-audit-log-svc.test|http:\/\/test-platform-audit-log-svc|g" ./config/settings/platform_audit_log.json
+          sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/test-console.cloudverse.ai|g" ./config/krakend.json
+          sed -i "s|http:\/\/cspm.test|http:\/\/test-cspm|g" ./config/settings/cspm_rest.json
+      - name: Krakend replace for staging
+        if: ${{ needs.InitInfo.outputs.environment }} == 'staging'
+        run: |
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/staging-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/staging-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/staging-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver_rest.json
+          sed -i "s|http:\/\/platform-budget-svc.test|http:\/\/staging-platform-budget-svc|g" ./config/settings/platform_budget.json
+          sed -i "s|http:\/\/platform-alarm-svc.test|http:\/\/staging-platform-alarm-svc|g" ./config/settings/platform_alarm.json
+          sed -i "s|http:\/\/platform-iam-svc.test|http:\/\/staging-platform-iam-svc|g" ./config/settings/platform_iam.json
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/staging-platform-identity-svc|g" ./config/settings/platform_identity.json
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/staging-platform-identity-svc|g" ./config/settings/platform_identity_rest.json
+          sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/staging-platform-notification-svc|g" ./config/settings/platform_notification.json
+          sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/staging-platform-notification-svc|g" ./config/settings/cloudverse_notification_callback.json
+          sed -i "s|http:\/\/platform-audit-log-svc.test|http:\/\/staging-platform-audit-log-svc|g" ./config/settings/platform_audit_log.json
+          sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/staging-console.cloudverse.ai|g" ./config/krakend.json
+          sed -i "s|http:\/\/cspm.test|http:\/\/staging-cspm|g" ./config/settings/cspm_rest.json
+      - name: Krakend replace for production
+        if: ${{ needs.InitInfo.outputs.environment }} == 'prod'
+        run: |
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/production-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/production-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/production-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver_rest.json
+          sed -i "s|http:\/\/platform-budget-svc.test|http:\/\/production-platform-budget-svc|g" ./config/settings/platform_budget.json
+          sed -i "s|http:\/\/platform-alarm-svc.test|http:\/\/production-platform-alarm-svc|g" ./config/settings/platform_alarm.json
+          sed -i "s|http:\/\/platform-iam-svc.test|http:\/\/production-platform-iam-svc|g" ./config/settings/platform_iam.json
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/production-platform-identity-svc|g" ./config/settings/platform_identity.json
+          sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/production-platform-identity-svc|g" ./config/settings/platform_identity_rest.json
+          sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/production-platform-notification-svc|g" ./config/settings/platform_notification.json
+          sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/production-platform-notification-svc|g" ./config/settings/cloudverse_notification_callback.json
+          sed -i "s|http:\/\/platform-audit-log-svc.test|http:\/\/production-platform-audit-log-svc|g" ./config/settings/platform_audit_log.json
+          sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/console.cloudverse.ai|g" ./config/krakend.json
+          sed -i "s|http:\/\/cspm.test|http:\/\/production-cspm|g" ./config/settings/cspm_rest.json
       - name: Build docker container
         if: github.ref_type != 'tag'
         run: |
