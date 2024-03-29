@@ -138,7 +138,6 @@ jobs:
       environment: ${{ needs.Build.outputs.environment }}
       service: ${{ inputs.SERVICE }}
       token: ${{ secrets.GH_TOKEN }}
-    if: github.ref_name == 'main' || github.ref_name == 'test' || github.ref_name == 'production'
     steps:
       - run: |
           curl -L \
