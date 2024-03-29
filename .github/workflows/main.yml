@@ -77,7 +77,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Krakend replace for dev
-        if: ${{ needs.InitInfo.outputs.environment }} == 'dev'
+        if: needs.InitInfo.outputs.environment == 'dev'
         run: |
           sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/dev-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/dev-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
@@ -93,7 +93,7 @@ jobs:
           sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/dev-console.cloudverse.ai|g" ./config/krakend.json
           sed -i "s|http:\/\/cspm.test|http:\/\/dev-cspm|g" ./config/settings/cspm_rest.json
       - name: Krakend replace for test
-        if: ${{ needs.InitInfo.outputs.environment }} == 'test'
+        if: needs.InitInfo.outputs.environment == 'test'
         run: |
           sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/test-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/test-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
@@ -109,7 +109,7 @@ jobs:
           sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/test-console.cloudverse.ai|g" ./config/krakend.json
           sed -i "s|http:\/\/cspm.test|http:\/\/test-cspm|g" ./config/settings/cspm_rest.json
       - name: Krakend replace for staging
-        if: ${{ needs.InitInfo.outputs.environment }} == 'staging'
+        if: needs.InitInfo.outputs.environment == 'staging'
         run: |
           sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/staging-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/staging-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
@@ -125,7 +125,7 @@ jobs:
           sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/staging-console.cloudverse.ai|g" ./config/krakend.json
           sed -i "s|http:\/\/cspm.test|http:\/\/staging-cspm|g" ./config/settings/cspm_rest.json
       - name: Krakend replace for production
-        if: ${{ needs.InitInfo.outputs.environment }} == 'prod'
+        if: needs.InitInfo.outputs.environment == 'prod'
         run: |
           sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/production-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/production-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
