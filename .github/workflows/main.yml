@@ -45,16 +45,9 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           path: argocd
       - if: github.ref_type == 'tag'
-        uses: actions/checkout@v4
-        with:
-          repository: cloudVerse-Pte-Ltd/argocd
-          ref: main
-          token: ${{ secrets.GH_TOKEN }}
-          path: argocd
-      - if: github.ref_type == 'tag'
         id: staging
         run: |
-          staging_image=`grep -r -e "image: [^ ]*:.*" staging/${{ inputs.SERVICE }} | awk '{print $3}' | cut -d ":" -f2`
+          staging_image=`grep -r -e "image: [^ ]*:.*" argocd/staging/${{ inputs.SERVICE }} | awk '{print $3}' | cut -d ":" -f2`
           [[ staging_image = "" ]] && echo "Staging image not found" && exit 1
           echo "staging_image=${staging_image}" >> $GITHUB_OUTPUT
 
