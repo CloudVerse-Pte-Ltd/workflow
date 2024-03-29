@@ -21,7 +21,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       environment: ${{ steps.environment.outputs.environment }}
-      staging_image: ${{ steps.environment.outputs.staging }}
+      staging_image: ${{ steps.staging.outputs.staging_image }}
     steps:
       - uses: actions/checkout@v4
         with:
