@@ -89,8 +89,8 @@ jobs:
 
             prod)
               aws secretsmanager get-secret-value --secret-id production-cloudverse-identity-external-secret-env | jq --raw-output '.SecretString' >> .env
-              aws secretsmanager get-secret-value --secret-id production-cloudverse-identity-keystore-pkey-external-secret | jq --raw-output '.SecretString' >> public/config/jwks.json
               rm -rf public/config/jwks.json
+              aws secretsmanager get-secret-value --secret-id production-cloudverse-identity-keystore-pkey-external-secret | jq --raw-output '.SecretString' >> public/config/jwks.json
             ;;
 
             *)
