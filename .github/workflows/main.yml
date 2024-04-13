@@ -21,7 +21,6 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
       environment: ${{ steps.environment.outputs.environment }}
-      staging_image: ${{ steps.staging.outputs.staging_image }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,19 +36,6 @@ jobs:
           [[ $GITHUB_REF_NAME == "test" ]] && echo "environment=test" >> $GITHUB_OUTPUT || true
           [[ $GITHUB_REF_NAME == "production" ]] && echo "environment=staging" >> $GITHUB_OUTPUT || true
           [[ $GITHUB_REF_TYPE == "tag" ]] && echo "environment=prod" >> $GITHUB_OUTPUT || true
-      - if: github.ref_type == 'tag'
-        uses: actions/checkout@v4
-        with:
-          repository: cloudVerse-Pte-Ltd/argocd
-          ref: main
-          token: ${{ secrets.GH_TOKEN }}
-          path: argocd
-      - if: github.ref_type == 'tag'
-        id: staging
-        run: |
-          staging_image=`grep -r -e "image: [^ ]*:.*" argocd/staging/${{ inputs.SERVICE }} | awk '{print $3}' | cut -d ":" -f2`
-          [[ staging_image = "" ]] && echo "Staging image not found" && exit 1
-          echo "staging_image=${staging_image}" >> $GITHUB_OUTPUT
 
   Build:
     runs-on: ubuntu-latest
@@ -141,23 +127,10 @@ jobs:
           sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/console.cloudverse.ai|g" ./config/krakend.json
           sed -i "s|http:\/\/cspm.test|http:\/\/production-cspm|g" ./config/settings/cspm_rest.json
       - name: Build docker container
-        if: github.ref_type != 'tag'
         run: |
           IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${{ needs.InitInfo.outputs.environment }}/${{ inputs.SERVICE }}"
           docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
             -t ${IMAGE}:latest .
-      - name: Pull and tag image for production
-        if: github.ref_type == 'tag'
-        run: |
-          IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${{ needs.InitInfo.outputs.environment }}/${{ inputs.SERVICE }}"
-          STAGING_IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/staging/${{ inputs.SERVICE }}"
-          docker pull ${STAGING_IMAGE}:${{ needs.InitInfo.outputs.staging_image }}
-
-          docker tag ${STAGING_IMAGE}:${{ needs.InitInfo.outputs.staging_image }} ${IMAGE}:${{ needs.InitInfo.outputs.version }}
-          docker tag ${STAGING_IMAGE}:${{ needs.InitInfo.outputs.staging_image }} ${IMAGE}:latest
-
-          docker push ${IMAGE}:${{ needs.InitInfo.outputs.version }}
-          docker push ${IMAGE}:latest
 
       - name: Slack Notification Success
         if: ${{ success() }}
