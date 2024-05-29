@@ -29,4 +29,4 @@ jobs:
             -Dsonar.projectKey=${{ inputs.SERVICE }}
             -Dsonar.sources=.
             -Dsonar.host.url=https://sonar.cloudverse.ai
-            -Dsonar.login=${{ secrets.ANALYSIS_TOKEN }}
+            -Dsonar.token=${{ secrets.ANALYSIS_TOKEN }}
