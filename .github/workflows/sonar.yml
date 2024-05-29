@@ -22,9 +22,10 @@ jobs:
           curl -u ${{ secrets.USER_TOKEN }}: \
           -X POST \
           https://sonar.cloudverse.ai/api/projects/create?name=${{ inputs.SERVICE }}\&project=${{ inputs.SERVICE }}\&visibility=private
-      - name: Run analysis
-        run: |
-          echo 123
-
-
-
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v2.1.0
+        args: >-
+          -Dsonar.projectKey=${{ inputs.SERVICE }}
+          -Dsonar.sources=.
+          -Dsonar.host.url=https://sonar.cloudverse.ai
+          -Dsonar.login=${{ secrets.ANALYSIS_TOKEN }}
