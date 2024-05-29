@@ -1,0 +1,30 @@
+on:
+  workflow_call:
+    inputs:
+      SERVICE:
+        type: string
+        required: true
+    secrets:
+      USER_TOKEN:
+        required: true
+      ANALYSIS_TOKEN:
+        required: true
+
+jobs:
+  Scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create project if not exist
+        run: |
+          curl -u ${{ secrets.USER_TOKEN }}: \
+          -X POST \
+          https://sonar.cloudverse.ai/api/projects/create?name=${{ inputs.SERVICE }}\&project=${{ inputs.SERVICE }}\&visibility=private
+      - name: Run analysis
+        run: |
+          echo 123
+
+
+
