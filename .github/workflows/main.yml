@@ -110,7 +110,7 @@ jobs:
           sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/staging-platform-notification-svc|g" ./config/settings/platform_notification.json
           sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/staging-platform-notification-svc|g" ./config/settings/cloudverse_notification_callback.json
           sed -i "s|http:\/\/platform-audit-log-svc.test|http:\/\/staging-platform-audit-log-svc|g" ./config/settings/platform_audit_log.json
-          sed -i "s|http:\/\/test-cloud-discovery-v2.test|http:\/\/staging-cloud-discovery-v2|g" ./config/settings/cloud_discovery_v2_rest.json
+          # sed -i "s|http:\/\/test-cloud-discovery-v2.test|http:\/\/staging-cloud-discovery-v2|g" ./config/settings/cloud_discovery_v2_rest.json
           sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/staging-console.cloudverse.ai|g" ./config/krakend.json
           sed -i "s|http:\/\/cspm.test|http:\/\/staging-cspm|g" ./config/settings/cspm_rest.json
       - name: Krakend replace for production
@@ -127,7 +127,7 @@ jobs:
           sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/production-platform-notification-svc|g" ./config/settings/platform_notification.json
           sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/production-platform-notification-svc|g" ./config/settings/cloudverse_notification_callback.json
           sed -i "s|http:\/\/platform-audit-log-svc.test|http:\/\/production-platform-audit-log-svc|g" ./config/settings/platform_audit_log.json
-          sed -i "s|http:\/\/test-cloud-discovery-v2.test|http:\/\/production-cloud-discovery-v2|g" ./config/settings/cloud_discovery_v2_rest.json
+          # sed -i "s|http:\/\/test-cloud-discovery-v2.test|http:\/\/production-cloud-discovery-v2|g" ./config/settings/cloud_discovery_v2_rest.json
           sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/console.cloudverse.ai|g" ./config/krakend.json
           sed -i "s|http:\/\/cspm.test|http:\/\/production-cspm|g" ./config/settings/cspm_rest.json
       - name: Build docker container
