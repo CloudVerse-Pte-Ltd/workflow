@@ -67,6 +67,7 @@ jobs:
         run: |
           sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/dev-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/dev-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/dev-cloud-provider-driver-svc|g" ./config/settings/open_api_cloud_provider_driver.json
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/dev-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver_rest.json
           sed -i "s|http:\/\/platform-budget-svc.test|http:\/\/dev-platform-budget-svc|g" ./config/settings/platform_budget.json
           sed -i "s|http:\/\/platform-alarm-svc.test|http:\/\/dev-platform-alarm-svc|g" ./config/settings/platform_alarm.json
@@ -85,6 +86,7 @@ jobs:
           sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/test-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/test-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/test-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver_rest.json
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/test-cloud-provider-driver-svc|g" ./config/settings/open_api_cloud_provider_driver.json
           sed -i "s|http:\/\/platform-budget-svc.test|http:\/\/test-platform-budget-svc|g" ./config/settings/platform_budget.json
           sed -i "s|http:\/\/platform-alarm-svc.test|http:\/\/test-platform-alarm-svc|g" ./config/settings/platform_alarm.json
           sed -i "s|http:\/\/platform-iam-svc.test|http:\/\/test-platform-iam-svc|g" ./config/settings/platform_iam.json
@@ -102,6 +104,7 @@ jobs:
           sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/staging-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/staging-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/staging-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver_rest.json
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/staging-cloud-provider-driver-svc|g" ./config/settings/open_api_cloud_provider_driver.json
           sed -i "s|http:\/\/platform-budget-svc.test|http:\/\/staging-platform-budget-svc|g" ./config/settings/platform_budget.json
           sed -i "s|http:\/\/platform-alarm-svc.test|http:\/\/staging-platform-alarm-svc|g" ./config/settings/platform_alarm.json
           sed -i "s|http:\/\/platform-iam-svc.test|http:\/\/staging-platform-iam-svc|g" ./config/settings/platform_iam.json
@@ -119,6 +122,7 @@ jobs:
           sed -i "s|http:\/\/platform-identity-svc.test|http:\/\/production-platform-identity-svc|g" ./config/partials/cloudverse_id_auth.tmpl
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/production-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver.json
           sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/production-cloud-provider-driver-svc|g" ./config/settings/cloud_provider_driver_rest.json
+          sed -i "s|http:\/\/cloud-provider-driver-svc.test|http:\/\/production-cloud-provider-driver-svc|g" ./config/settings/open_api_cloud_provider_driver.json
           sed -i "s|http:\/\/platform-budget-svc.test|http:\/\/production-platform-budget-svc|g" ./config/settings/platform_budget.json
           sed -i "s|http:\/\/platform-alarm-svc.test|http:\/\/production-platform-alarm-svc|g" ./config/settings/platform_alarm.json
           sed -i "s|http:\/\/platform-iam-svc.test|http:\/\/production-platform-iam-svc|g" ./config/settings/platform_iam.json
