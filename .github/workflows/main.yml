@@ -80,7 +80,7 @@ jobs:
         if: github.ref_type != 'tag'
         run: |
           IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${{ needs.InitInfo.outputs.environment }}/${{ inputs.SERVICE }}"
-          docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
+          docker buildx build --platform linux/amd64 -f Dockerfile.migration --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
             -t ${IMAGE}:latest .
       - name: Pull and tag image for production
         if: github.ref_type == 'tag'
