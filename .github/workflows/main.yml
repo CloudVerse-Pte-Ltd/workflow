@@ -77,7 +77,6 @@ jobs:
           sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/dev-platform-notification-svc|g" ./config/settings/platform_notification.json
           sed -i "s|http:\/\/platform-notification-svc.test|http:\/\/dev-platform-notification-svc|g" ./config/settings/cloudverse_notification_callback.json
           sed -i "s|http:\/\/platform-audit-log-svc.test|http:\/\/dev-platform-audit-log-svc|g" ./config/settings/platform_audit_log.json
-          sed -i "s|http:\/\/test-cloud-discovery-v2.test|http:\/\/dev-cloud-discovery-v2|g" ./config/settings/cloud_discovery_v2_rest.json
           sed -i "s|https:\/\/test-mcp.cloudverse.ai|https:\/\/dev-console.cloudverse.ai|g" ./config/krakend.json
           sed -i "s|http:\/\/cspm.test|http:\/\/dev-cspm|g" ./config/settings/cspm_rest.json
       - name: Krakend replace for test
