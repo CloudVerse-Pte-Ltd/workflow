@@ -21,6 +21,7 @@ on:
 
 env:
   REGISTRY: asia-southeast1-docker.pkg.dev
+  REGION: ${{ inputs.REGION }}
 
 jobs:
   InitInfo:
