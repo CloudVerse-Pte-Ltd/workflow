@@ -4,6 +4,9 @@ on:
       SERVICE:
         type: string
         required: true
+      REGION:
+        type: string
+        default: ""
     secrets:
       GCP_CREDS:
         required: true
@@ -88,7 +91,8 @@ jobs:
             ;;
 
             prod)
-              aws secretsmanager get-secret-value --secret-id production-cloudverse-frontend-external-secret | jq --raw-output '.SecretString' >> .env
+              [[ $REGION != "" ]] && REGION="${REGION}-" 
+              aws secretsmanager get-secret-value --secret-id production-${REGION}cloudverse-frontend-external-secret | jq --raw-output '.SecretString' >> .env
             ;;
 
             *)
