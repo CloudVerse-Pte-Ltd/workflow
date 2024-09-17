@@ -147,6 +147,11 @@ jobs:
       token: ${{ secrets.GH_TOKEN }}
     steps:
       - run: |
+          if [[ $REGION != "" ]]; then
+            echo "asia-southeast1-docker.pkg.dev/cloudverse-foundation/${{ needs.InitInfo.outputs.environment }}/${{ inputs.SERVICE }}:${{ needs.InitInfo.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+      - run: |
           curl -L \
           -X POST \
           -H "Accept: application/vnd.github+json" \
