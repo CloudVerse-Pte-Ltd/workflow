@@ -39,12 +39,12 @@ jobs:
           set +e
       - id: environment
         run: |
+          [[ $REGION != "" ]] && echo "environment=prod" >> $GITHUB_OUTPUT && exit 0
+          
           [[ $GITHUB_REF_NAME == "main" ]] && echo "environment=dev" >> $GITHUB_OUTPUT || true
           [[ $GITHUB_REF_NAME == "test" ]] && echo "environment=test" >> $GITHUB_OUTPUT || true
           [[ $GITHUB_REF_NAME == "production" ]] && echo "environment=staging" >> $GITHUB_OUTPUT || true
           [[ $GITHUB_REF_TYPE == "tag" ]] && echo "environment=prod" >> $GITHUB_OUTPUT || true
-
-          [[ $REGION != "" ]] && echo "environment=prod" >> $GITHUB_OUTPUT || true
 
   Build:
     runs-on: ubuntu-latest
