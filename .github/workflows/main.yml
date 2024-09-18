@@ -4,6 +4,9 @@ on:
       SERVICE:
         type: string
         required: true
+      REGION:
+        type: string
+        default: ""
     secrets:
       GCP_CREDS:
         required: true
@@ -18,6 +21,7 @@ on:
 
 env:
   REGISTRY: asia-southeast1-docker.pkg.dev
+  REGION: ${{ inputs.REGION }}
 
 jobs:
   InitInfo:
@@ -36,6 +40,8 @@ jobs:
           set +e
       - id: environment
         run: |
+          [[ $REGION != "" ]] && echo "environment=prod" >> $GITHUB_OUTPUT && exit 0
+
           [[ $GITHUB_REF_NAME == "main" ]] && echo "environment=dev" >> $GITHUB_OUTPUT || true
           [[ $GITHUB_REF_NAME == "test" ]] && echo "environment=test" >> $GITHUB_OUTPUT || true
           [[ $GITHUB_REF_NAME == "production" ]] && echo "environment=staging" >> $GITHUB_OUTPUT || true
@@ -88,9 +94,10 @@ jobs:
             ;;
 
             prod)
-              aws secretsmanager get-secret-value --secret-id production-cloudverse-identity-external-secret-env | jq --raw-output '.SecretString' >> .env
+              [[ $REGION != "" ]] && REGION="${REGION}-"
+              aws secretsmanager get-secret-value --secret-id production-${REGION}cloudverse-identity-external-secret-env | jq --raw-output '.SecretString' >> .env
               rm -rf public/config/jwks.json
-              aws secretsmanager get-secret-value --secret-id production-cloudverse-identity-keystore-pkey-external-secret | jq --raw-output '.SecretString' >> public/config/jwks.json
+              aws secretsmanager get-secret-value --secret-id production-${REGION}cloudverse-identity-keystore-pkey-external-secret | jq --raw-output '.SecretString' >> public/config/jwks.json
             ;;
 
             *)
@@ -104,6 +111,11 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build docker container
         run: |
+          [[ $REGION != "" ]] && \
+             IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${REGION}/${{ inputs.SERVICE }}" && \
+             docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
+             -t ${IMAGE}:latest . && exit 0
+
           IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${{ needs.InitInfo.outputs.environment }}/${{ inputs.SERVICE }}"
           docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
             -t ${IMAGE}:latest .
@@ -142,13 +154,14 @@ jobs:
       token: ${{ secrets.GH_TOKEN }}
     steps:
       - run: |
-          curl -L \
-          -X POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${token}" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/CloudVerse-Pte-Ltd/argocd/actions/workflows/83931042/dispatches \
-          -d '{"ref":"main","inputs":{"environment":"'"${environment}"'","service":"'"${service}"'","version": "'"${version}"'"}}'
+          echo "For the time being"
+          # curl -L \
+          # -X POST \
+          # -H "Accept: application/vnd.github+json" \
+          # -H "Authorization: Bearer ${token}" \
+          # -H "X-GitHub-Api-Version: 2022-11-28" \
+          # https://api.github.com/repos/CloudVerse-Pte-Ltd/argocd/actions/workflows/83931042/dispatches \
+          # -d '{"ref":"main","inputs":{"environment":"'"${environment}"'","service":"'"${service}"'","version": "'"${version}"'"}}'
       - name: Slack Notification Success
         if: ${{ success() }}
         uses: rtCamp/action-slack-notify@v2
