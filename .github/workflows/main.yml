@@ -6,7 +6,7 @@ on:
         required: true
       REGION:
         type: string
-        default: "default"
+        default: ""
     secrets:
       GCP_CREDS:
         required: true
@@ -36,12 +36,11 @@ jobs:
       - id: version
         run: |
           set -e
-          [[ $REGION != "default" ]] && REGION="-${REGION}"
-          echo "version=$(git describe --tags `git rev-list --tags --max-count=1`)-$(git rev-parse --short HEAD)${REGION}" >> $GITHUB_OUTPUT
+          echo "version=$(git describe --tags `git rev-list --tags --max-count=1`)-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           set +e
       - id: environment
         run: |
-          [[ $REGION != "default" ]] && echo "environment=prod" >> $GITHUB_OUTPUT && exit 0
+          [[ $REGION != "" ]] && echo "environment=prod" >> $GITHUB_OUTPUT && exit 0
 
           [[ $GITHUB_REF_NAME == "main" ]] && echo "environment=dev" >> $GITHUB_OUTPUT || true
           [[ $GITHUB_REF_NAME == "test" ]] && echo "environment=test" >> $GITHUB_OUTPUT || true
@@ -61,7 +60,7 @@ jobs:
           SLACK_CHANNEL: cloudverse-devops
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_TITLE: "`${{ inputs.SERVICE }}` build `started` on `${{ needs.InitInfo.outputs.environment }}` in region ${{ env.REGION }}"
+          SLACK_TITLE: "`${{ inputs.SERVICE }}` build `started` on `${{ needs.InitInfo.outputs.environment }}`"
           SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - uses: actions/checkout@v4
         with:
@@ -95,7 +94,7 @@ jobs:
             ;;
 
             prod)
-              [[ $REGION != "default" ]] && REGION="${REGION}-"
+              [[ $REGION != "" ]] && REGION="${REGION}-"
               aws secretsmanager get-secret-value --secret-id production-${REGION}cloudverse-frontend-external-secret | jq --raw-output '.SecretString' >> .env
             ;;
 
@@ -110,14 +109,10 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build docker container
         run: |
-          [[ $REGION != "default" ]] && \
+          [[ $REGION != "" ]] && \
              IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${REGION}/${{ inputs.SERVICE }}" && \
              docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
              -t ${IMAGE}:latest . && exit 0
-
-          IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${{ needs.InitInfo.outputs.environment }}/${{ inputs.SERVICE }}"
-          docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
-            -t ${IMAGE}:latest .
 
           IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${{ needs.InitInfo.outputs.environment }}/${{ inputs.SERVICE }}"
           docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
@@ -129,7 +124,7 @@ jobs:
           SLACK_CHANNEL: cloudverse-devops
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_TITLE: "`${{ inputs.SERVICE }}` build `success` on `${{ needs.InitInfo.outputs.environment }}` in region ${{ env.REGION }}"
+          SLACK_TITLE: "`${{ inputs.SERVICE }}` build `success` on `${{ needs.InitInfo.outputs.environment }}`"
           SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: Slack Notification Failure
         if: ${{ failure() }}
@@ -138,7 +133,7 @@ jobs:
           SLACK_CHANNEL: cloudverse-devops
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_TITLE: "`${{ inputs.SERVICE }}` build `failed` on `${{ needs.InitInfo.outputs.environment }}` in region ${{ env.REGION }}"
+          SLACK_TITLE: "`${{ inputs.SERVICE }}` build `failed` on `${{ needs.InitInfo.outputs.environment }}`"
           SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - id: version
         run: |
@@ -171,7 +166,7 @@ jobs:
           SLACK_CHANNEL: cloudverse-devops
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_TITLE: "`${{ inputs.SERVICE }}` deploy `started` on `${{ needs.Build.outputs.environment }}` in region ${{ env.REGION }}"
+          SLACK_TITLE: "`${{ inputs.SERVICE }}` deploy `started` on `${{ needs.Build.outputs.environment }}`"
           SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: Slack Notification Failure
         if: ${{ failure() }}
@@ -180,5 +175,5 @@ jobs:
           SLACK_CHANNEL: cloudverse-devops
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_TITLE: "`${{ inputs.SERVICE }}` deploy `failed` on `${{ needs.Build.outputs.environment }}` in region ${{ env.REGION }}"
+          SLACK_TITLE: "`${{ inputs.SERVICE }}` deploy `failed` on `${{ needs.Build.outputs.environment }}`"
           SLACK_MESSAGE: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
