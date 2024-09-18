@@ -6,7 +6,7 @@ on:
         required: true
       REGION:
         type: string
-        default: ""
+        default: "default"
     secrets:
       GCP_CREDS:
         required: true
@@ -36,12 +36,12 @@ jobs:
       - id: version
         run: |
           set -e
-          [[ $REGION != "" ]] && REGION="-${REGION}"
+          [[ $REGION != "default" ]] && REGION="-${REGION}"
           echo "version=$(git describe --tags `git rev-list --tags --max-count=1`)-$(git rev-parse --short HEAD)${REGION}" >> $GITHUB_OUTPUT
           set +e
       - id: environment
         run: |
-          [[ $REGION != "" ]] && echo "environment=prod" >> $GITHUB_OUTPUT && exit 0
+          [[ $REGION != "default" ]] && echo "environment=prod" >> $GITHUB_OUTPUT && exit 0
 
           [[ $GITHUB_REF_NAME == "main" ]] && echo "environment=dev" >> $GITHUB_OUTPUT || true
           [[ $GITHUB_REF_NAME == "test" ]] && echo "environment=test" >> $GITHUB_OUTPUT || true
@@ -95,7 +95,7 @@ jobs:
             ;;
 
             prod)
-              [[ $REGION != "" ]] && REGION="${REGION}-"
+              [[ $REGION != "default" ]] && REGION="${REGION}-"
               aws secretsmanager get-secret-value --secret-id production-${REGION}cloudverse-frontend-external-secret | jq --raw-output '.SecretString' >> .env
             ;;
 
@@ -110,7 +110,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build docker container
         run: |
-          [[ $REGION != "" ]] && \
+          [[ $REGION != "default" ]] && \
              IMAGE="asia-southeast1-docker.pkg.dev/cloudverse-foundation/${REGION}/${{ inputs.SERVICE }}" && \
              docker buildx build --platform linux/amd64 --push -t ${IMAGE}:${{ needs.InitInfo.outputs.version }} \
              -t ${IMAGE}:latest . && exit 0
