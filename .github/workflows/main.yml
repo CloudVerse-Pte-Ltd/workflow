@@ -58,6 +58,7 @@ jobs:
       - uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: '${{ secrets.GCP_CREDS }}'
+      - uses: 'google-github-actions/setup-gcloud@v2'
       - name: Log in to the Container registry
         run: gcloud auth configure-docker asia-southeast1-docker.pkg.dev
       - name: Set up Docker Buildx
